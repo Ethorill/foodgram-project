@@ -10,20 +10,7 @@
     <link rel="stylesheet" href="{% static '/pages/index.css' %}">
 </head>
 <body class="body">
-<header class="header">
-    <nav class="nav">
-        <div class="nav__container container">
-            <ul class="nav__items list">
-                <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Рецепты</a></li>
-                <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок <span class="badge badge_style_blue nav__badge" id="counter">4</span></a></li>
-            </ul>
-            <ul class="nav__items list">
-                <li class="nav__item"><a href="#" class="nav__link link">Войти</a></li>
-                <li class="nav__item"><a href="#" class="button button_style_blue">Создать аккаунт</a></li>
-            </ul>
-        </div>
-    </nav>
-</header>
+{% include 'includes/nonauthHeader.html' %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">Рецепты</h1>
@@ -48,7 +35,7 @@
             <div class="card" data-id="124">
                 <a href="#" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="Какой-то текст" class="card__image"></a>
                 <div class="card__body">
-                    <a class="card__title link" href="#" target="_blank">{{ recipe.title }}</a>
+                    <a class="card__title link" href="{% url 'recipe_detail' recipe.id %}" target="_blank">{{ recipe.title }}</a>
                     <ul class="card__items">
                         {% for tag in recipe.tag.all %}
                             {% if tag.name == 'Обед' %}
@@ -87,15 +74,7 @@
             </ul>
         </nav>
     </main>
-    <footer class="footer">
-        <div class="footer__container container">
-            <a href="#" class="footer__brand link">Продуктовый помощник</a>
-            <ul class="footer__items">
-                <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
-                <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
-            </ul>
-        </div>
-    </footer>
+    {% include 'includes/footer.html' %}
 <script src="{% static '/js/components/MainCards.js' %}"></script>
 
 <script src="{% static '/js/components/Purchases.js' %}"></script>

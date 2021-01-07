@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Французские тосты</title>
+    <link rel="stylesheet" href="{% static '/pages/single.css' %}">
+</head>
+<body class="body">
+{% include 'includes/nonauthHeader.html' %}
+    <main class="main container">
+        <div class="single-card" data-id="371">
+            <img src="{{ recipe.image.url }}" alt="какой-то текст" class="single-card__image">
+            <div class="single-card__info">
+                <div class="single-card__header-info">
+                    <h1 class="single-card__title">{{ recipe.title }}</h1>
+
+                </div>
+                <ul class="single-card__items">
+                    {% for tag in recipe.tag.all %}
+                    {% if tag.name == 'Обед' %}
+                        <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    {% endif %}
+                        {% if tag.name == 'Завтрак' %}
+                            <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                        {% endif %}
+                        {% if tag.name == 'Ужин' %}
+                            <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <div class="single-card__items single-card__items_column">
+                    <p class="single-card__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
+                    <p class="single-card__text"><span class="icon-user"></span> {{ recipe.author }}</p>
+                </div>
+                <ul class="single-card__items">
+                    <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
+                </ul>
+                <div class="single-card__section">
+                    <h3 class="single-card__section-title">Ингридиенты:</h3>
+                    <div class="single-card__items single-card__items_column">
+                        {% for ingr in recipe.recipes.all %}
+                        <p class=" single-card__section-item">{{ ingr.ingridient.title }} - {{ ingr.amount }} {{ ingr.ingridient.measurement_unit }}.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="single-card__section">
+                    <h3 class="single-card__section-title">Описание:</h3>
+                    <p class=" single-card__section-text">{{ recipe.description }}</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% include 'includes/footer.html' %}
+<script src="{% static '/js/components/Purchases.js' %}"></script>
+<script src="{% static '/js/config/config.js' %}"></script>
+
+<script src="{% static '/js/components/MainCards.js' %}"></script>
+<script src="{% static '/js/components/SingleCard.js' %}"></script>
+<script src="{% static '/js/components/Header.js' %}"></script>
+
+<script src="{% static '/js/api/Api.js' %}"></script>
+<script src="{% static '/temp/singlePageNotAuth.js' %}"></script>
+</body>
+</html>
