@@ -1,11 +1,15 @@
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework import generics, viewsets
-from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import TemplateHTMLRenderer, StaticHTMLRenderer
+from rest_framework.decorators import api_view, renderer_classes, \
+    authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
-from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 
-from .models import Recipe, RecipeIngridient
+from .models import Recipe, RecipeIngridient, User, FavoriteRecipe
+from .serializers import FavoriteRecipeSerializer
 
 
 # class RecipeDetails(generics.RetrieveAPIView):
@@ -20,13 +24,63 @@ from .models import Recipe, RecipeIngridient
 @api_view(['GET'])
 @renderer_classes([TemplateHTMLRenderer])
 def recipes_all(request):
-    queryset = Recipe.objects.all()
-    return Response({'recipes': queryset}, template_name='indexNotAuth.html')
+    recipes = Recipe.objects.all()
+    return Response({'recipes': recipes}, template_name='indexNotAuth.html')
 
 
 @api_view(['GET'])
 @renderer_classes([TemplateHTMLRenderer])
 def recipe_detail(request, id):
-    queryset = get_object_or_404(Recipe, id=id)
-    return Response({'recipe': queryset},
+    recipe = get_object_or_404(Recipe, id=id)
+    return Response({'recipe': recipe},
                     template_name='singlePageNotAuth.html')
+
+
+@api_view(['GET'])
+@renderer_classes([TemplateHTMLRenderer])
+@permission_classes([IsAuthenticated])
+def recipe_profile(request, prof_id):
+    user = get_object_or_404(User, id=prof_id)
+    recipes = user.recipes.all()
+    return Response({"user": user, 'recipes': recipes},
+                    template_name='authorRecipe.html')
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def add_favorite(request):
+    recipe_id = request.data['id']
+
+    if recipe_id is None:
+        return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
+
+    obj, created = FavoriteRecipe.objects.get_or_create(
+        recipe_id=recipe_id,
+        user=request.user)
+
+    if created:
+        return Response({'success': True}, status=status.HTTP_201_CREATED)
+    return Response({'success': False})
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def favorite_detail(request, id):
+    fav = get_object_or_404(FavoriteRecipe, recipe_id=id
+    )
+    if request.user != fav.user:
+        return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
+    fav.delete()
+    return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@renderer_classes([TemplateHTMLRenderer])
+@permission_classes([IsAuthenticated])
+def get_all_favor(request):
+    favorites = FavoriteRecipe.objects.select_related('user').filter(user=request.user)
+    return Response({'recipes': favorites},
+                    template_name='favorite.html')

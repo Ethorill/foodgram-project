@@ -35,9 +35,13 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/')
     tag = models.ManyToManyField(Tag, verbose_name='Тэг')
     description = models.TextField()
-    ingredients = models.ManyToManyField(Ingridient, verbose_name='Ингридиенты')
+    ingredients = models.ManyToManyField(Ingridient,
+                                         verbose_name='Ингридиенты')
     time = models.PositiveIntegerField()
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
+
+    class Meta:
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.title
@@ -55,3 +59,16 @@ class RecipeIngridient(models.Model):
         related_name='recipes'
     )
     amount = models.PositiveSmallIntegerField()
+
+
+class FavoriteRecipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='follower_recipe')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='following_recipe')
+
+    class Meta:
+        unique_together = ('user', 'recipe')
+
+    def __str__(self):
+        return f'follower {self.user} is following on {self.recipe}'

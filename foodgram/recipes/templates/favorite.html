@@ -7,18 +7,19 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Рецепты</title>
+    <title>Избранное</title>
     <link rel="stylesheet" href="{% static '/pages/index.css' %}">
 </head>
 <body class="body">
   {% if request.user.is_authenticated %}
-    {% include 'includes/authHeader.html' with active_index='nav__item_active'%}
+    {% include 'includes/authHeader.html' with active_favor='nav__item_active'%}
   {% else %}
     {% include 'includes/nonauthHeader.html' %}
   {% endif %}
+
     <main class="main container">
         <div class="main__header">
-            <h1 class="main__title">Рецепты</h1>
+            <h1 class="main__title">Избранное</h1>
             <ul class="tags">
                 <li class="tags__item">
                     <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
@@ -33,11 +34,9 @@
                     <label for="dinner" class="tags__label">Ужин</label>
                 </li>
             </ul>
+
         </div>
-
-        {% include 'includes/card.html' with items=recipes item=recipe %}
-
-
+        {% include 'includes/followcard.html' with items=recipes item=recipe %}
         <nav class="pagination" aria-label="Search results pages">
             <ul class="pagination__container">
                 <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-left"></span></a></li>
@@ -50,13 +49,22 @@
             </ul>
         </nav>
     </main>
-    {% include 'includes/footer.html' %}
+    <footer class="footer">
+        <div class="footer__container container">
+            <a href="#" class="footer__brand link">Продуктовый помощник</a>
+            <ul class="footer__items">
+                <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
+                <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+            </ul>
+        </div>
+    </footer>
+
+
 <script src="{% static '/js/components/MainCards.js' %}"></script>
 
 <script src="{% static '/js/components/Purchases.js' %}"></script>
-  {% if request.user.is_authenticated %}
-      <script src="{% static '/js/components/Favorites.js' %}"></script>
-  {% endif %}
+<script src="{% static '/js/components/Favorites.js' %}"></script>
+
 
 
 <script src="{% static '/js/config/config.js' %}"></script>
@@ -64,9 +72,6 @@
 <script src="{% static '/js/components/Header.js' %}"></script>
 
 <script src="{% static '/js/api/Api.js' %}"></script>
-   {% if request.user.is_authenticated %}
-       <script src="{% static '/temp/indexAuth.js' %}"></script>
-  {% endif %}
-<script src="{% static '/temp/indexNotAuth.js' %}"></script>
+<script src="{% static '/temp/favorite.js' %}"></script>
 </body>
 </html>

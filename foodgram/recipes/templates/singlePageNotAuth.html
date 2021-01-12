@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="{% static '/pages/single.css' %}">
 </head>
 <body class="body">
-{% include 'includes/nonauthHeader.html' %}
+  {% if request.user.is_authenticated %}
+    {% include 'includes/authHeader.html' %}
+  {% else %}
+    {% include 'includes/nonauthHeader.html' %}
+  {% endif %}
     <main class="main container">
         <div class="single-card" data-id="371">
             <img src="{{ recipe.image.url }}" alt="какой-то текст" class="single-card__image">
