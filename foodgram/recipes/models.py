@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 
@@ -20,9 +21,6 @@ class Ingridient(models.Model):
     measurement_unit = models.CharField(
         max_length=20, verbose_name='Единица измерения'
     )
-    part = models.ManyToManyField(
-        'Recipe', through='RecipeIngridient'
-    )
 
     def __str__(self):
         return self.title
@@ -36,6 +34,8 @@ class Recipe(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name='Тэг')
     description = models.TextField()
     ingredients = models.ManyToManyField(Ingridient,
+                                         through='RecipeIngridient',
+                                         through_fields=('recipe', 'ingridient'),
                                          verbose_name='Ингридиенты')
     time = models.PositiveIntegerField()
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
@@ -72,3 +72,19 @@ class FavoriteRecipe(models.Model):
 
     def __str__(self):
         return f'follower {self.user} is following on {self.recipe}'
+
+
+class FollowUser(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='author')
+
+    def __str__(self):
+        return f'follower - {self.user} following - {self.author}'

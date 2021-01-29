@@ -1,5 +1,4 @@
-<div class="card-list">
-        {% for item in items %}
+
             <div class="card" data-id="{{ item.id }}">
                 <a href="{% url 'recipe_detail' item.id %}" class="link" target="_blank"><img src="{{ item.image.url }}" alt="Какой-то текст" class="card__image"></a>
                 <div class="card__body">
@@ -22,14 +21,15 @@
                         <p class="card__text"><span class="icon-user"></span> <a href="{% url 'recipe_profile' item.author.id %}" style="color: black">{{ item.author }}</a></p>
                     </div>
                 </div>
+                {% if request.user.is_authenticated %}
                 <div class="card__footer">
+
                 <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                    {% if item.following_recipe.exists %}
+                    {% if item.fav %}
                         <button class="button button_style_none" name="favorites" ><span class="icon-favorite icon-favorite_active"></span></button>
                         {% else %}
                         <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
                     {% endif %}
                 </div>
+                {% endif %}
             </div>
-             {% endfor %}
-        </div>

@@ -19,8 +19,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', include('recipes.urls')),
     path('admin/', admin.site.urls),
-    path('', include('recipes.urls'))
+    path('auth/', include('accounts.urls')),
+
 ]
 if settings.DEBUG:
     import debug_toolbar

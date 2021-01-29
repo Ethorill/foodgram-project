@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% load get_filter %}
     {% csrf_token %}
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -19,44 +20,23 @@
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">Рецепты</h1>
-            <ul class="tags">
-                <li class="tags__item">
-                    <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
-                    <span class="tags__label">Завтрак</span>
-                </li>
-                <li class="tags__item">
-                    <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="#"></a>
-                    <span for="lunch" class="tags__label">Обед</span>
-                </li>
-                <li class="tags__item">
-                    <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="#"></a>
-                    <label for="dinner" class="tags__label">Ужин</label>
-                </li>
-            </ul>
+            {% include 'includes/tags.html' %}
         </div>
 
-        {% include 'includes/card.html' with items=recipes item=recipe %}
-
-
-        <nav class="pagination" aria-label="Search results pages">
-            <ul class="pagination__container">
-                <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-left"></span></a></li>
-                <li class="pagination__item pagination__item_active"><a class="pagination__link link" href="#">1</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">2</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">3</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">4</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#">5</a></li>
-                <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-right"></span></a></li>
-            </ul>
-        </nav>
+        <div class="card-list">
+        {% for recipe in page %}
+        {% include 'includes/card.html' with item=recipe %}
+        {% endfor %}
+        </div>
+        {% include 'includes/paginator.html' %}
     </main>
     {% include 'includes/footer.html' %}
 <script src="{% static '/js/components/MainCards.js' %}"></script>
 
 <script src="{% static '/js/components/Purchases.js' %}"></script>
-  {% if request.user.is_authenticated %}
-      <script src="{% static '/js/components/Favorites.js' %}"></script>
-  {% endif %}
+
+<script src="{% static '/js/components/Favorites.js' %}"></script>
+
 
 
 <script src="{% static '/js/config/config.js' %}"></script>
@@ -66,7 +46,9 @@
 <script src="{% static '/js/api/Api.js' %}"></script>
    {% if request.user.is_authenticated %}
        <script src="{% static '/temp/indexAuth.js' %}"></script>
+       {% else %}
+       <script src="{% static '/temp/indexNotAuth.js' %}"></script>
   {% endif %}
-<script src="{% static '/temp/indexNotAuth.js' %}"></script>
+
 </body>
 </html>

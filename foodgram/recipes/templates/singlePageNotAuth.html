@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% csrf_token %}
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Французские тосты</title>
+    <title>Рецепт: {{ recipe.title }}</title>
     <link rel="stylesheet" href="{% static '/pages/single.css' %}">
 </head>
 <body class="body">
@@ -16,11 +17,25 @@
     {% include 'includes/nonauthHeader.html' %}
   {% endif %}
     <main class="main container">
-        <div class="single-card" data-id="371">
+        <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
             <img src="{{ recipe.image.url }}" alt="какой-то текст" class="single-card__image">
             <div class="single-card__info">
                 <div class="single-card__header-info">
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
+                    {% if request.user.is_authenticated %}
+                        {% if not check_follow %}
+                        <div class="single-card__favorite">
+                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                        <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
+                        </div>
+                            {% elif check_follow %}
+                            <div class="single-card__favorite">
+                        <button class="button button_style_none" name="favorites" ><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
+                        <div class="single-card__favorite-tooltip tooltip">Убрать из избранного</div>
+                        </div>
+
+                         {% endif %}
+                    {% endif %}
 
                 </div>
                 <ul class="single-card__items">
@@ -40,9 +55,11 @@
                     <p class="single-card__text"><span class="icon-time"></span> {{ recipe.time }} мин.</p>
                     <p class="single-card__text"><span class="icon-user"></span> {{ recipe.author }}</p>
                 </div>
+                {% if request.user.is_authenticated %}
                 <ul class="single-card__items">
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
                 </ul>
+                {% endif %}
                 <div class="single-card__section">
                     <h3 class="single-card__section-title">Ингридиенты:</h3>
                     <div class="single-card__items single-card__items_column">
@@ -62,11 +79,24 @@
 <script src="{% static '/js/components/Purchases.js' %}"></script>
 <script src="{% static '/js/config/config.js' %}"></script>
 
+  {% if request.user.is_authenticated %}
+      <script src="{% static '/js/components/Subscribe.js' %}"></script>
+  {% endif %}
+
+  {% if request.user.is_authenticated %}
+      <script src="{% static '/js/components/Favorites.js' %}"></script>
+  {% endif %}
+
 <script src="{% static '/js/components/MainCards.js' %}"></script>
 <script src="{% static '/js/components/SingleCard.js' %}"></script>
 <script src="{% static '/js/components/Header.js' %}"></script>
 
 <script src="{% static '/js/api/Api.js' %}"></script>
-<script src="{% static '/temp/singlePageNotAuth.js' %}"></script>
+  {% if request.user.is_authenticated %}
+      <script src="{% static '/temp/singlePage.js' %}"></script>
+  {% else %}
+      <script src="{% static '/temp/singlePageNotAuth.js' %}"></script>
+  {% endif %}
+
 </body>
 </html>
