@@ -23,8 +23,11 @@
                 </div>
                 {% if request.user.is_authenticated %}
                 <div class="card__footer">
-
-                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                {% if item.shop %}
+                    <button class="button button_style_light-blue" name="purchases"><span class="icon-check button__icon"></span>Рецепт доабвлен</button>
+                    {% else %}
+                    <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                    {% endif %}
                     {% if item.fav %}
                         <button class="button button_style_none" name="favorites" ><span class="icon-favorite icon-favorite_active"></span></button>
                         {% else %}

@@ -1,0 +1,36 @@
+<ul class="tags">
+                {% load get_filter %}
+                {% if 'breakfast' in tags_list %}
+                <li class="tags__item">
+                    <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="?{% query_transform request tag1=None %}"></a>
+                    <span class="tags__label">Завтрак</span>
+                </li>
+                    {% else %}
+                    <li class="tags__item">
+                    <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange " href="?{% query_transform request tag1='breakfast' %}"></a>
+                    <span class="tags__label">Завтрак</span>
+                </li>
+                {% endif %}
+                {% if 'lunch' in tags_list %}
+                <li class="tags__item">
+                    <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="?{% query_transform request tag2=None%}"></a>
+                    <span for="lunch" class="tags__label">Обед</span>
+                </li>
+                    {% else %}
+                    <li class="tags__item">
+                    <a id="lunch" class="tags__checkbox tags__checkbox_style_green " href="?{% query_transform request tag2='lunch' %}"></a>
+                    <span for="lunch" class="tags__label">Обед</span>
+                </li>
+                {% endif %}
+                {% if 'dinner' in tags_list %}
+                <li class="tags__item">
+                    <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active " href="?{% query_transform request tag3=None %}"></a>
+                    <label for="dinner" class="tags__label">Ужин</label>
+                </li>
+                    {% else %}
+                    <li class="tags__item">
+                    <a id="dinner" class="tags__checkbox tags__checkbox_style_purple " href="?{% query_transform request tag3='dinner' %}"></a>
+                    <label for="dinner" class="tags__label">Ужин</label>
+                </li>
+                {% endif %}
+            </ul>
