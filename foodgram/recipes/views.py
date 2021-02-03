@@ -140,6 +140,8 @@ def new_recipe(request):
 
 
 def recipe_delete(request, recipe_id):
+    if not request.user.is_authenticated:
+        return redirect('/')
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if request.user != recipe.author:
         return redirect('/')
@@ -447,4 +449,3 @@ def page_not_found(request, exception):
 
 def server_error(request):
     return render(request, "misc/500.html", status=500)
-

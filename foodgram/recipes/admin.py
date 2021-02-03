@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from .models import Recipe, Tag, Ingridient, RecipeIngridient, FavoriteRecipe, \
-    FollowUser, ShopingList
+    FollowUser, ShopingList, User
 
 
 class ShopListAdmin(admin.ModelAdmin):
@@ -18,6 +19,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 class IngridientAdmin(admin.ModelAdmin):
     list_display = ('title', 'measurement_unit',)
+    list_filter = ('title',)
 
 
 class RecipeIngridientInline(admin.StackedInline):
