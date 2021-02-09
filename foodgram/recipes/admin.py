@@ -11,20 +11,6 @@ from .models import (Recipe,
                      ShopingList)
 
 
-class FlatPageAdmin(FlatPageAdmin):
-    fieldsets = (
-        (None, {'fields': ('url', 'title', 'content', 'sites')}),
-        (_('Advanced options'), {
-            'classes': ('collapse',),
-            'fields': (
-                'enable_comments',
-                'registration_required',
-                'template_name',
-            ),
-        }),
-    )
-
-
 class ShopListAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe',)
 
