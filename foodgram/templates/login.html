@@ -1,17 +1,9 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Войти на сайт</title>
-    <link rel="stylesheet" href="{% static '/pages/form.css' %}">
-</head>
-<body class="body">
-{% include 'includes/Header.html' %}
-<main class="main container">
+{% extends 'extends/base.html' %}
+{% block title %}Войти на сайт{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static '/pages/form.css' %}">{% endblock %}
+{% block header %}{% include 'includes/Header.html' %}{% endblock %}
+{% block content %}
     <div class="main__header">
         <h1 class="main__title">Войти на сайт</h1>
     </div>
@@ -45,9 +37,4 @@
             </div>
         </form>
     </div>
-
-
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

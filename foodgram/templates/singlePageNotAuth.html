@@ -1,9 +1,13 @@
 {% extends 'extends/base.html' %}
 {% load static %}
-{% block css %}<link rel="stylesheet" href="{% static '/pages/single.css' %}">{% endblock %}
+{% block css %}
+    <link rel="stylesheet"
+          href="{% static '/pages/single.css' %}">{% endblock %}
+{% block title %}Рецепт{% endblock %}
 
 
-{% block header %}{% include 'includes/Header.html' with active_index='nav__item_active' %}{% endblock %}
+{% block header %}
+    {% include 'includes/Header.html' with active_index='nav__item_active' %}{% endblock %}
 {% block content %}
     {% for recipe in recipe %}
         <div class="single-card" data-id="{{ recipe.id }}"
@@ -129,14 +133,14 @@
     {% endfor %}
 {% endblock %}
 {% block js %}
-<script src="{% static '/js/components/Purchases.js' %}"></script>
-<script src="{% static '/js/config/config.js' %}"></script>
-<script src="{% static '/js/components/Subscribe.js' %}"></script>
-<script src="{% static '/js/components/Favorites.js' %}"></script>
-<script src="{% static '/js/components/MainCards.js' %}"></script>
-<script src="{% static '/js/components/SingleCard.js' %}"></script>
-<script src="{% static '/js/components/Header.js' %}"></script>
-<script src="{% static '/js/api/Api.js' %}"></script>
-<script src="{% static '/temp/singlePage.js' %}"></script>
-<script src="{% static '/temp/singlePageNotAuth.js' %}"></script>
+    <script src="{% static '/js/components/Purchases.js' %}"></script>
+    <script src="{% static '/js/config/config.js' %}"></script>
+    <script src="{% static '/js/components/Subscribe.js' %}"></script>
+    <script src="{% static '/js/components/Favorites.js' %}"></script>
+    <script src="{% static '/js/components/MainCards.js' %}"></script>
+    <script src="{% static '/js/components/SingleCard.js' %}"></script>
+    <script src="{% static '/js/components/Header.js' %}"></script>
+    <script src="{% static '/js/api/Api.js' %}"></script>
+    <script src="{% static '/temp/singlePage.js' %}"></script>
+    <script src="{% static '/temp/singlePageNotAuth.js' %}"></script>
 {% endblock %}

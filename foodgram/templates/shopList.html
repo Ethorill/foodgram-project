@@ -1,7 +1,10 @@
 {% extends 'extends/base.html' %}
 {% load static %}
-{% block css %}<link rel="stylesheet" href="{% static '/pages/shopList.css' %}">{% endblock %}
-{% block header %}{% include 'includes/Header.html'  with active_shop='nav__item_active' %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet"
+          href="{% static '/pages/shopList.css' %}">{% endblock %}
+{% block header %}
+    {% include 'includes/Header.html'  with active_shop='nav__item_active' %}{% endblock %}
 {% block title %}Список покупок{% endblock %}
 {% block content %}
     <div class="main__header">
@@ -35,9 +38,9 @@
     </div>
 {% endblock %}
 {% block js %}
-<script src="{% static '/js/config/config.js' %}"></script>
-<script src="{% static '/js/components/Header.js' %}"></script>
-<script src="{% static '/js/components/ShopList.js' %}"></script>
-<script src="{% static '/js/api/Api.js' %}"></script>
-<script src="{% static 'temp/shopList.js' %}"></script>
+    <script src="{% static '/js/config/config.js' %}"></script>
+    <script src="{% static '/js/components/Header.js' %}"></script>
+    <script src="{% static '/js/components/ShopList.js' %}"></script>
+    <script src="{% static '/js/api/Api.js' %}"></script>
+    <script src="{% static 'temp/shopList.js' %}"></script>
 {% endblock %}

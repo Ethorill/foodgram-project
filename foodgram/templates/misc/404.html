@@ -1,30 +1,17 @@
-<!doctype html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Регистрация</title>
-   {% if request.user.is_authenticated %}
-    {% include 'includes/Header.html' %}
-  {% else %}
-    {% include 'includes/Header.html' %}
-  {% endif %}
-</head>
-<body class="body">
-{% include 'includes/Header.html' %}
-<main class="main container">
+{% extends 'extends/base.html' %}
+{% load static %}
+{% block title %}404{% endblock %}
+{% block header %}{% include 'includes/Header.html' %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet"
+          href="{% static '/pages/index.css' %}">{% endblock %}
+{% block content %}
     <div class="custom-center-block">
-            <p class="custom-text-block" style="color: red">Страница не найдена, простите :(</p>
+        <p class="custom-text-block" style="color: red">Страница не найдена,
+            простите :(</p>
         <div class="custom-button-block">
-            <a href="{% url 'index' %}" class="button button_style_blue">Перейти на главную</a>
+            <a href="{% url 'index' %}" class="button button_style_blue">Перейти
+                на главную</a>
         </div>
     </div>
-
-
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

@@ -1,17 +1,11 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Регистрация</title>
-    <link rel="stylesheet" href="{% static '/pages/index.css' %}">
-</head>
-<body class="body">
-{% include 'includes/Header.html' %}
-<main class="main container">
+{% extends 'extends/base.html' %}
+{% block title %}Вы вышли{% endblock %}
+{% block css %}
+    <link rel="stylesheet"
+          href="{% static '/pages/index.css' %}">{% endblock %}
+
+{% block header %}{% include 'includes/Header.html' %}{% endblock %}
+{% block content %}
     <div class="custom-center-block">
         <p class="custom-text-block">Вы вышли</p>
         <div class="custom-button-block">
@@ -20,8 +14,4 @@
         </div>
     </div>
 
-
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

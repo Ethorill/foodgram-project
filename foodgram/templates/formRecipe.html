@@ -1,18 +1,12 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% extends 'extends/base.html' %}
+{% load static %}
+{% block title %}Создание рцепета{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static '/pages/form.css' %}">{% endblock %}
 
-    <title>Создание рецепта</title>
-    <link rel="stylesheet" href="{% static '/pages/form.css' %}">
-</head>
-<body class="body">
-{% include 'includes/Header.html' with active_new='nav__item_active' %}
-<main class="main container">
+{% block header %}
+    {% include 'includes/Header.html' with active_new='nav__item_active' %}{% endblock %}
+{% block content %}
     <div class="main__header">
         <h1 class="main__title">Создание рецепта рецепта</h1>
     </div>
@@ -134,24 +128,11 @@
             </div>
         </form>
     </div>
-
-
-</main>
-<footer class="footer">
-    <div class="footer__container container">
-        <a href="#" class="footer__brand link">Продуктовый помощник</a>
-        <ul class="footer__items">
-            <li class="footer__item"><a href="#" class="footer__link link">Об
-                авторе </a></li>
-            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a>
-            </li>
-        </ul>
-    </div>
-</footer>
-<script src="{% static '/js/config/config.js' %}"></script>
-<script src="{% static '/js/components/Header.js' %}"></script>
-<script src="{% static '/js/utils/debouncing.js' %}"></script>
-<script src="{% static '/js/api/Api.js' %}"></script>
-<script src="{% static 'temp/formRecipe.js' %}"></script>
-</body>
-</html>
+{% endblock %}
+{% block js %}
+    <script src="{% static '/js/config/config.js' %}"></script>
+    <script src="{% static '/js/components/Header.js' %}"></script>
+    <script src="{% static '/js/utils/debouncing.js' %}"></script>
+    <script src="{% static '/js/api/Api.js' %}"></script>
+    <script src="{% static 'temp/formRecipe.js' %}"></script>
+{% endblock %}

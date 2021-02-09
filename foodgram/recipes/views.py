@@ -313,9 +313,7 @@ def favorite_remove(request, id):
 @renderer_classes([TemplateHTMLRenderer])
 @permission_classes([IsAuthenticated])
 def get_all_favor(request):
-    tags = QueryDict(request.GET.urlencode())
-    tags_list = [i for i in tags.values() if
-                 i in ['dinner', 'lunch', 'breakfast']]
+    tags_list = get_tags_from_get(request.GET.urlencode())
     if tags_list:
         favorites = FavoriteRecipe.objects.select_related('user').filter(
             user=request.user, recipe__tag__slug__in=tags_list
@@ -372,7 +370,7 @@ def remove_sub(request, id):
 def get_all_sub(request):
     user = FollowUser.objects.select_related('user').filter(
         user_id=request.user)
-    paginator = Paginator(user, 6)
+    paginator = Paginator(user, paginator_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
