@@ -5,9 +5,11 @@ User = get_user_model()
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=10)
-    slug = models.SlugField(unique=True, max_length=100, blank=True, null=True)
-    color = models.CharField(max_length=15, blank=True, null=True)
+    name = models.CharField(max_length=10, verbose_name='Имя')
+    slug = models.SlugField(unique=True, max_length=100, blank=True, null=True,
+                            verbose_name='Слаг')
+    color = models.CharField(max_length=15, blank=True, null=True,
+                             verbose_name='Цвет')
 
     class Meta:
         verbose_name = 'Тэг'
@@ -39,7 +41,7 @@ class Recipe(models.Model):
                                verbose_name='Автор')
     title = models.CharField(max_length=50, verbose_name='Название')
     image = models.ImageField(upload_to='recipes/')
-    tag = models.ManyToManyField(Tag, verbose_name='Тэг')
+    tags = models.ManyToManyField(Tag, verbose_name='Тэг')
     description = models.TextField()
     ingredients = models.ManyToManyField(Ingridient,
                                          through='RecipeIngridient',
@@ -56,7 +58,8 @@ class Recipe(models.Model):
 
     @property
     def count_fav(self):
-        fav = FavoriteRecipe.objects.filter(recipe_id=self.pk).count()
+        fav = FavoriteRecipe.objects.select_related('author').filter(
+            recipe_id=self.pk).count()
         return fav
 
     def __str__(self):
@@ -72,7 +75,7 @@ class RecipeIngridient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipes'
+        related_name='recipes_ingridients'
     )
     amount = models.PositiveSmallIntegerField()
 
@@ -89,7 +92,7 @@ class FavoriteRecipe(models.Model):
         verbose_name_plural = 'Избранные'
 
     def __str__(self):
-        return f'follower {self.user} is following on {self.recipe}'
+        return f'follower {self.user.name} is following on {self.recipe.title}'
 
 
 class FollowUser(models.Model):
@@ -109,9 +112,7 @@ class FollowUser(models.Model):
         verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        return f'follower - {self.user} following - {self.author}'
-
-
+        return f'follower - {self.user.name} following - {self.author.name}'
 
 
 class ShopingList(models.Model):

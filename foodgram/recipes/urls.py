@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .pdf_render import render_pdf_view
 from .views import (recipes_all,
                     recipe_detail,
                     recipe_profile,
@@ -15,14 +17,14 @@ from .views import (recipes_all,
                     recipe_delete,
                     add_purchases,
                     remove_purchases)
-from . pdf_render import render_pdf_view
 
 urlpatterns = [
     path('', recipes_all, name='index'),
     path('recipe/<int:id>/', recipe_detail, name='recipe_detail'),
     path('new_recipe/', new_recipe, name='new_recipe'),
     path('edit_recipe/<int:recipe_id>/', edit_recipe, name='edit_r'),
-    path('delete_recipe/<int:recipe_id>/', recipe_delete, name='recipe_delete'),
+    path('delete_recipe/<int:recipe_id>/', recipe_delete,
+         name='recipe_delete'),
     path('favorites/', add_favorite, name='add_favorite'),
     path('favorites/<int:id>/', favorite_remove, name='favorite_detail'),
     path('my_favorites/', get_all_favor, name='get_all_favor'),
@@ -36,3 +38,6 @@ urlpatterns = [
     path('purchases/', add_purchases, name='purch'),
     path('purchases/<int:id>/', remove_purchases, name='rem_purch')
 ]
+
+handler404 = "recipes.views.page_not_found"  # noqa
+handler500 = "recipes.views.server_error"  # noqa

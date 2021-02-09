@@ -1,0 +1,73 @@
+{% extends 'extends/base.html' %}
+{% load static %}
+{% block header %}{% include 'includes/Header.html' with active_sub='nav__item_active' %}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static '/pages/myFollow.css' %}">{% endblock %}
+{% block content %}
+    <div class="main__header">
+        {% if user %}
+            <h1 class="main__title">Мои подписки</h1>
+        {% else %}
+            <h1 class="main__title">Мои подписки, но их пока нету :(</h1>
+        {% endif %}
+    </div>
+    <div class="card-list">
+
+        {% for authors in page %}
+            <div class="card-user" data-author="{{ authors.author.id }}">
+                <div class="card-user__header">
+                    <h2 class="card-user__title">{{ authors.author }}</h2>
+                </div>
+                <div class="card-user__body">
+                    <ul class="card-user__items">
+                        {% for recipe in authors.author.recipes.all|slice:"3" %}
+                            <li class="card-user__item">
+                                <div class="recipe">
+                                    <img src="{{ recipe.image.url }}"
+                                         alt="какой-то-текст"
+                                         class="recipe__image">
+                                    <a class="h3 recipe__title link"
+                                       href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a>
+                                    <p class="recipe__text"><span
+                                            class="icon-time"></span> {{ recipe.time }}
+                                        мин.</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+
+                        {% if authors.author.recipes.all.count > 3 %}
+                            <li class="card-user__item">
+                                <a href="{% url 'recipe_profile' authors.author.id %}"
+                                   class="card-user__link link">Еще {{ authors.author.recipes.all.count|add:"-3" }}
+                                    {% if authors.author.recipes.all.count|add:"-3" > 1 and authors.author.recipes.all.count|add:"-3" < 5 %}
+                                        рецепта...
+                                    {% elif authors.author.recipes.all.count|add:"-3" == 1 %}
+                                        рецепт...
+                                    {% else %}
+                                        рецептов...
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+                <div class="card-user__footer">
+                    <button class="button button_style_light-blue button_size_auto"
+                            name="subscribe">Отписаться
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    {% include 'includes/paginator.html' %}
+{% endblock %}
+{% block js %}
+<script src="{% static '/js/config/config.js' %}"></script>
+<script src="{% static '/js/components/MainCards.js' %}"></script>
+<script src="{% static '/js/components/MyFollow.js' %}"></script>
+<script src="{% static '/js/components/Subscribe.js' %}"></script>
+<script src="{% static '/js/components/Header.js' %}"></script>
+<script src="{% static '/js/api/Api.js' %}"></script>
+<script src="{% static '/temp/myFollow.js' %}"></script>
+{% endblock %}

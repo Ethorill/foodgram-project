@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static '/pages/index.css' %}">
+</head>
+<body class="body">
+ {% if request.user.is_authenticated %}
+    {% include 'includes/Header.html' %}
+  {% else %}
+    {% include 'includes/Header.html' %}
+  {% endif %}
+<main class="main container">
+    <div class="custom-center-block">
+            <h1 style="color: red; font-family: 'Times New Roman'">Error 500</h1>
+            <p class="custom-text-block" style="color: red">На нашей стороне пошло что то не так, простите :(</p>
+        <div class="custom-button-block">
+            <a href="{% url 'index' %}" class="button button_style_blue">Перейти на главную</a>
+        </div>
+    </div>
+
+
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

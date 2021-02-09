@@ -1,20 +1,40 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.flatpages.admin import FlatPageAdmin
+from django.utils.translation import gettext_lazy as _
 
-from .models import Recipe, Tag, Ingridient, RecipeIngridient, FavoriteRecipe, \
-    FollowUser, ShopingList, User
+from .models import (Recipe,
+                     Tag,
+                     Ingridient,
+                     RecipeIngridient,
+                     FavoriteRecipe,
+                     FollowUser,
+                     ShopingList)
+
+
+class FlatPageAdmin(FlatPageAdmin):
+    fieldsets = (
+        (None, {'fields': ('url', 'title', 'content', 'sites')}),
+        (_('Advanced options'), {
+            'classes': ('collapse',),
+            'fields': (
+                'enable_comments',
+                'registration_required',
+                'template_name',
+            ),
+        }),
+    )
 
 
 class ShopListAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe')
+    list_display = ('user', 'recipe',)
 
 
 class FollowUserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'author')
+    list_display = ('user', 'author',)
 
 
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe')
+    list_display = ('user', 'recipe',)
 
 
 class IngridientAdmin(admin.ModelAdmin):

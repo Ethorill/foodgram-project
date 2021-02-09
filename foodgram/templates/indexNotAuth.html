@@ -1,0 +1,30 @@
+{% extends 'extends/base.html' %}
+{% load static %}
+{% block header %}{% include 'includes/Header.html' with active_index='nav__item_active' %}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static '/pages/index.css' %}">{% endblock %}
+{% block content %}
+    <div class="main__header">
+        <h1 class="main__title">Рецепты</h1>
+        {% include 'includes/tags.html' %}
+    </div>
+
+    <div class="card-list">
+        {% for recipe in page %}
+            {% include 'includes/card.html' with item=recipe %}
+        {% endfor %}
+    </div>
+    {% include 'includes/paginator.html' %}
+{% endblock %}
+{% block js %}
+<script src="{% static '/js/components/MainCards.js' %}"></script>
+<script src="{% static '/js/components/Purchases.js' %}"></script>
+<script src="{% static '/js/components/Favorites.js' %}"></script>
+<script src="{% static '/js/config/config.js' %}"></script>
+<script src="{% static '/js/components/CardList.js' %}"></script>
+<script src="{% static '/js/components/Header.js' %}"></script>
+<script src="{% static '/js/api/Api.js' %}"></script>
+{% if request.user.is_authenticated %}
+<script src="{% static '/temp/indexAuth.js' %}"></script>
+{% endif %}
+<script src="{% static '/temp/indexNotAuth.js' %}"></script>
+{% endblock %}
