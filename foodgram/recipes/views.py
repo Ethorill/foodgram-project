@@ -174,6 +174,7 @@ def recipes_all(request):
     tags_list = get_tags_from_get(request.GET.urlencode())
     visitor = check_auth_visitors(request)
 
+    # Я пытался сократить этот момент, но без поломок я не смог
     if tags_list:
         recipes = Recipe.objects.select_related('author').filter(
             tag__slug__in=tags_list
