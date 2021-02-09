@@ -396,7 +396,7 @@ def add_purchases(request):
     if recipe_id is None:
         return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
 
-    obj, created = ShopingList.objects.get_or_create(
+    _, created = ShopingList.objects.get_or_create(
         recipe_id=recipe_id,
         user=request.user)
 
