@@ -71,7 +71,7 @@ class RecipeActionCreate:
 
     def add_tags(self, tags, recipe):
         for add_item in tags:
-            tag = Tag.objects.get(slug=add_item)
+            tag = Tag.objects.get_object_or_404(Tag, slug=add_item)
             recipe.tag.add(tag)
         recipe.save()
 
