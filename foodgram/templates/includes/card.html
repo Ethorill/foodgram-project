@@ -6,7 +6,7 @@
         <a class="card__title link" href="{% url 'recipe_detail' item.id %}"
            target="_blank">{{ item.title }}</a>
         <ul class="card__items">
-            {% for tag in item.tag.all %}
+            {% for tag in item.tags.all %}
                 {% if tag.name == 'Обед' %}
                     <li class="card__item"><span
                             class="badge badge_style_green">Обед</span></li>

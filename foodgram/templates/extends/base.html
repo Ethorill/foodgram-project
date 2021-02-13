@@ -12,7 +12,8 @@
     {% block css %}{% endblock %}
 </head>
 <body class="body">
-{% block header %}{% endblock %}
+{% block header %}<!-- Хедер все время изменяеться параметром with, думаю, что лучше
+     оставить для каждой страницы свой хедер-->{% endblock %}
 <main class="main container">
         {% block content %}
         {% endblock %}

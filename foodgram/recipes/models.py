@@ -70,7 +70,7 @@ class RecipeIngridient(models.Model):
     ingridient = models.ForeignKey(
         Ingridient,
         on_delete=models.CASCADE,
-        related_name='ingridients'
+        related_name='recipes_ingridients'
     )
     recipe = models.ForeignKey(
         Recipe,

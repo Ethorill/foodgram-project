@@ -38,6 +38,3 @@ urlpatterns = [
     path('purchases/', add_purchases, name='purch'),
     path('purchases/<int:id>/', remove_purchases, name='rem_purch')
 ]
-
-handler404 = "recipes.views.page_not_found"  # noqa
-handler500 = "recipes.views.server_error"  # noqa

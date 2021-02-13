@@ -113,5 +113,4 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 APPEND_SLASH = False
 
-# Не нашел как указать размер с помощью встроенных инструментов
 PAGINATOR_SIZE = 6

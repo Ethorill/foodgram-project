@@ -32,7 +32,7 @@ class RecipeIngridientInline(admin.StackedInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'count_fav',)
-    list_filter = ('author', 'title', 'tag',)
+    list_filter = ('author', 'title', 'tags',)
     inlines = (RecipeIngridientInline,)
 
 

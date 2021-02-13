@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Exists, OuterRef
-from django.http import QueryDict
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.decorators import (api_view,
@@ -17,7 +16,8 @@ from .forms import RecipeForm
 from .functions import (get_ingr,
                         get_tags_from_post,
                         get_tags_from_get,
-                        check_auth_visitors)
+                        check_auth_visitors,
+                        custom_filter_for_recipes)
 from .models import (Recipe,
                      User,
                      FavoriteRecipe,
@@ -28,55 +28,6 @@ from .models import (Recipe,
                      ShopingList)
 
 paginator_size = PAGINATOR_SIZE
-
-
-class RecipeActionCreate:
-    def check_error_tag(self, tags, form, template_name, tag_msg):
-        if not tags:
-            tag_error = tag_msg
-            return Response({'form': form, 'tag_error': tag_error},
-                            template_name=template_name)
-
-    def check_error_ingr(self, request_ingr, form, template_name):
-        if not request_ingr:
-            recipe_error = 'Обязательное поле'
-            return Response(
-                {'form': form, 'recipe_error': recipe_error},
-                template_name=template_name)
-
-    def add_ingr(self, request_ingr, recipe, form, delete_recipe: bool,
-                 template_name):
-
-        for i in request_ingr:
-            try:
-                RecipeIngridient.objects.create(
-                    ingridient=get_object_or_404(Ingridient, title=i[1]),
-                    recipe=recipe,
-                    amount=i[0]
-                )
-            except Ingridient.DoesNotExist:
-                recipe_error = 'Произошла ошибка при добавлении ингридиента,' \
-                               ' возмможно вы ввели не существующий'
-
-                if delete_recipe is True:
-                    recipe.delete()
-
-                return Response(
-                    {'form': form, 'recipe_error': recipe_error},
-                    template_name=template_name)
-
-    def delete_tags(self, old_tags, old_recipe):
-        for delete_tag in old_tags:
-            old_recipe.tag.remove(delete_tag)
-
-    def add_tags(self, tags, recipe):
-        for add_item in tags:
-            tag = Tag.objects.get_object_or_404(Tag, slug=add_item)
-            recipe.tag.add(tag)
-        recipe.save()
-
-
-action_recipe = RecipeActionCreate()
 
 
 @api_view(['GET', 'POST'])
@@ -97,18 +48,22 @@ def edit_recipe(request, recipe_id):
     tags = get_tags_from_post(request.POST)
 
     if form.is_valid():
-        action_recipe.check_error_tag(tags=tags, form=form,
-                                      template_name='formChangeRecipe.htm',
-                                      tag_msg='Вы убрали тэги полностью')
-        action_recipe.check_error_ingr(request_ingr, form,
-                                       template_name='formChangeRecipe.htm')
+        if not tags:
+            tag_error = "Обязательное поле"
+            return Response({'form': form, 'tag_error': tag_error},
+                            template_name='formRecipe.html')
+        if not request_ingr:
+            recipe_error = 'Обязательное поле'
+            return Response(
+                {'form': form, 'recipe_error': recipe_error},
+                template_name='formChangeRecipe.html')
         recipe = form.save(commit=False)
         recipe.save()
-        action_recipe.delete_tags(old_tags, old_recipe)
-        action_recipe.add_tags(tags=tags, recipe=recipe)
+        form.delete_tags(old_tags, old_recipe)
+        form.add_tags(tags=tags, recipe=recipe)
         old_ingr.delete()
-        action_recipe.add_ingr(request_ingr, recipe, form, delete_recipe=False,
-                               template_name='formChangeRecipe.htm')
+        form.add_ingr(request_ingr, recipe, form, delete_recipe=False,
+                      template_name='formChangeRecipe.html')
         form.save_m2m()
         return redirect(reverse('recipe_detail', args=[recipe.id]))
     return Response(template_name='formChangeRecipe.html',
@@ -125,17 +80,22 @@ def new_recipe(request):
     tags = get_tags_from_post(request.POST)
 
     if form.is_valid():
-        action_recipe.check_error_tag(tags=tags, form=form,
-                                      template_name='formRecipe.htm',
-                                      tag_msg='Вы не указали тэги')
-        action_recipe.check_error_ingr(request_ingr, form,
-                                       template_name='formRecipe.htm')
+        if not tags:
+            tag_error = "Обязательное поле"
+            return Response({'form': form, 'tag_error': tag_error},
+                            template_name='formRecipe.html')
+
+        if not request_ingr:
+            recipe_error = 'Обязательное поле'
+            return Response(
+                {'form': form, 'recipe_error': recipe_error},
+                template_name='formRecipe.html')
         recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
-        action_recipe.add_tags(tags, recipe)
-        action_recipe.add_ingr(request_ingr, recipe, form, delete_recipe=True,
-                               template_name='formRecipe.htm')
+        form.add_tags(tags, recipe)
+        form.add_ingr(request_ingr, recipe, form, delete_recipe=True,
+                      template_name='formRecipe.html')
 
         form.save_m2m()
         return redirect(reverse('recipe_detail', args=[recipe.id]))
@@ -145,9 +105,8 @@ def new_recipe(request):
 @login_required
 def recipe_delete(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    if request.user != recipe.author:
-        return redirect(reverse('index'))
-    recipe.delete()
+    if request.user == recipe.author:
+        recipe.delete()
     return redirect(reverse('index'))
 
 
@@ -166,6 +125,7 @@ def get_all_ingr(request):
             }
             result.append(unit)
         return Response(data=result, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
@@ -173,35 +133,8 @@ def get_all_ingr(request):
 def recipes_all(request):
     tags_list = get_tags_from_get(request.GET.urlencode())
     visitor = check_auth_visitors(request)
-
-    # Я пытался сократить этот момент, но без поломок я не смог
-    if tags_list:
-        recipes = Recipe.objects.select_related('author').filter(
-            tag__slug__in=tags_list
-        ).annotate(
-            fav=Exists(
-                FavoriteRecipe.objects.filter(user=visitor,
-                                              recipe_id=OuterRef('id'))
-            ),
-            shop=Exists(
-                ShopingList.objects.filter(user=visitor,
-                                           recipe_id=OuterRef('id'))
-            )
-        ).distinct()
-
-    if not tags_list:
-        recipes = Recipe.objects.select_related('author').annotate(
-        ).annotate(
-            fav=Exists(
-                FavoriteRecipe.objects.filter(user=visitor,
-                                              recipe_id=OuterRef('id'))
-            ),
-            shop=Exists(
-                ShopingList.objects.filter(user=visitor,
-                                           recipe_id=OuterRef('id'))
-            )
-        )
-
+    recipes = custom_filter_for_recipes(
+        Recipe.objects.select_related('author'), tags_list, visitor)
     paginator = Paginator(recipes, paginator_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -210,7 +143,7 @@ def recipes_all(request):
                      'paginator': paginator,
                      'tags_list': tags_list
                      },
-                    template_name='indexNotAuth.html')
+                    template_name='index.html')
 
 
 @api_view(['GET'])
@@ -236,7 +169,7 @@ def recipe_detail(request, id):
     ).distinct()
 
     return Response({'recipe': recipe},
-                    template_name='singlePageNotAuth.html')
+                    template_name='singlePage.html')
 
 
 @api_view(['GET'])
@@ -245,31 +178,7 @@ def recipe_profile(request, prof_id):
     visitor = check_auth_visitors(request)
     tags_list = get_tags_from_get(request.GET.urlencode())
     user = get_object_or_404(User, id=prof_id)
-
-    if tags_list:
-        recipes = user.recipes.filter(tag__slug__in=tags_list).annotate(
-            fav=Exists(
-                FavoriteRecipe.objects.filter(user=visitor,
-                                              recipe_id=OuterRef('id'))
-            ),
-            shop=Exists(
-                ShopingList.objects.filter(user=visitor,
-                                           recipe_id=OuterRef('id'))
-            )
-        ).distinct()
-
-    if not tags_list:
-        recipes = user.recipes.all().annotate(
-            fav=Exists(
-                FavoriteRecipe.objects.filter(user=visitor,
-                                              recipe_id=OuterRef('id')),
-            ),
-            shop=Exists(
-                ShopingList.objects.filter(user=visitor,
-                                           recipe_id=OuterRef('id'))
-            )
-        ).distinct()
-
+    recipes = custom_filter_for_recipes(user.recipes.all(), tags_list, visitor)
     paginator = Paginator(recipes, paginator_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -284,7 +193,7 @@ def recipe_profile(request, prof_id):
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
 def add_favorite(request):
-    recipe_id = request.data.get('id', None)
+    recipe_id = request.data.get('id')
 
     if recipe_id is None:
         return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
@@ -317,13 +226,13 @@ def get_all_favor(request):
     tags_list = get_tags_from_get(request.GET.urlencode())
     if tags_list:
         favorites = FavoriteRecipe.objects.select_related('user').filter(
-            user=request.user, recipe__tag__slug__in=tags_list
+            user=request.user, recipe__tags__slug__in=tags_list
         )
     if not tags_list:
         favorites = FavoriteRecipe.objects.select_related('user').filter(
             user=request.user
         )
-    paginator = Paginator(favorites, 6)
+    paginator = Paginator(favorites, paginator_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return Response(
@@ -335,7 +244,7 @@ def get_all_favor(request):
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
 def add_sub(request):
-    author_id = request.data.get('id', None)
+    author_id = request.data.get('id')
     author = get_object_or_404(User, id=author_id)
     if request.user == author:
         return Response({'success': False}, status.HTTP_403_FORBIDDEN)
@@ -391,7 +300,7 @@ def shoplist(request):
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
 def add_purchases(request):
-    recipe_id = request.data.get('id', None)
+    recipe_id = request.data.get('id')
 
     if recipe_id is None:
         return Response({'success': False}, status=status.HTTP_400_BAD_REQUEST)
@@ -414,16 +323,3 @@ def remove_purchases(request, id):
     if request.method == 'DELETE':
         return Response({'success': True}, status=status.HTTP_200_OK)
     return redirect(reverse('shoplist'))
-
-
-def page_not_found(request, exception):
-    return render(
-        request,
-        "misc/404.html",
-        {"path": request.path},
-        status=404
-    )
-
-
-def server_error(request):
-    return render(request, "misc/500.html", status=500)

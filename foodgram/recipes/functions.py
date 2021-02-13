@@ -1,4 +1,9 @@
+from django.db.models import Exists, OuterRef
 from django.http import QueryDict
+
+from recipes.models import FavoriteRecipe, ShopingList
+
+tags = ['breakfast', 'lunch', 'dinner']
 
 
 def get_ingr(obj):
@@ -7,8 +12,9 @@ def get_ingr(obj):
     :param obj: request.POST
     :return: ingredients_list
     """
-    ingr = {k: l for k, l in obj.items() if
-            k.startswith('nameIngredient') or k.startswith('valueIngredient')}
+    ingr = {parameter: value for parameter, value in obj.items() if
+            parameter.startswith('nameIngredient') or parameter.startswith(
+                'valueIngredient')}
     ingredients = [i for i in ingr.values()]
     ingredients_list = []
     while 0 <= len(ingredients) - 1:
@@ -25,7 +31,7 @@ def get_tags_from_post(obj):
     :return: tags_list
     """
     tags_list = [tag for tag in obj if
-                 tag in ['breakfast', 'lunch', 'dinner']]
+                 tag in tags]
     return tags_list
 
 
@@ -37,7 +43,7 @@ def get_tags_from_get(obj):
     """
     tags = QueryDict(obj)
     tags_list = [i for i in tags.values() if
-                 i in ['dinner', 'lunch', 'breakfast']]
+                 i in ['breakfast', 'lunch', 'dinner']]
     return tags_list
 
 
@@ -49,5 +55,40 @@ def check_auth_visitors(obj):
     """
     if obj.user.is_authenticated:
         return obj.user
-    if not obj.user.is_authenticated:
+    else:
         return None
+
+
+def custom_filter_for_recipes(obj, tags_list, visitor):
+    """
+    Фильтр, который используеться для предотвращения повторения в коде,
+    он принимает выборку и от определенного случая меняет фильтр.
+    :param obj: QuerySet
+    :param tags_list: list
+    :param visitor: request.user
+    :return: filtered recipes
+    """
+    if tags_list:
+        recipes = obj.filter(tags__slug__in=tags_list).annotate(
+            fav=Exists(
+                FavoriteRecipe.objects.filter(user=visitor,
+                                              recipe_id=OuterRef('id'))
+            ),
+            shop=Exists(
+                ShopingList.objects.filter(user=visitor,
+                                           recipe_id=OuterRef('id'))
+            )
+        ).distinct()
+        return recipes
+    if not tags_list:
+        recipes = obj.annotate(
+            fav=Exists(
+                FavoriteRecipe.objects.filter(user=visitor,
+                                              recipe_id=OuterRef('id'))
+            ),
+            shop=Exists(
+                ShopingList.objects.filter(user=visitor,
+                                           recipe_id=OuterRef('id'))
+            )
+        ).distinct()
+        return recipes
