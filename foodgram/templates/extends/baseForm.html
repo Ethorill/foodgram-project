@@ -12,9 +12,8 @@
             рецепта{% endblock %}</h1>
     </div>
     <div class="form-container">
-        {% block header_form %}
             <form class="form" method="post" enctype="multipart/form-data"
-                  action="{% url 'new_recipe' %}">{% endblock %}
+                  action="{% block action_form %}{% url 'new_recipe' %}{% endblock %}">
         {% csrf_token %}
         <div class="form__group">
             <label for="id_name" class="form__label">Название

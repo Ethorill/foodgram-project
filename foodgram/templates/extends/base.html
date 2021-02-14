@@ -12,8 +12,7 @@
     {% block css %}{% endblock %}
 </head>
 <body class="body">
-{% block header %}<!-- Хедер все время изменяеться параметром with, думаю, что лучше
-     оставить для каждой страницы свой хедер-->{% endblock %}
+{% block header %}{% include 'includes/Header.html' with active_index='nav__item_active' %}{% endblock %}
 <main class="main container">
         {% block content %}
         {% endblock %}

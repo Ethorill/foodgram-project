@@ -3,7 +3,11 @@ from django.http import QueryDict
 
 from recipes.models import FavoriteRecipe, ShopingList
 
-tags = ['breakfast', 'lunch', 'dinner']
+BREAKFAST = 'breakfast'
+LUNCH = 'lunch'
+DINNER = 'dinner'
+
+tags = [BREAKFAST, LUNCH, DINNER]
 
 
 def get_ingr(obj):

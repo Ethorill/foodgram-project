@@ -1,14 +1,24 @@
 from django import forms
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 
 from .models import Recipe, Tag, RecipeIngridient, Ingridient
 
 
 class RecipeForm(forms.ModelForm):
-    def add_ingr(self, request_ingr, recipe, form, delete_recipe: bool,
-                 template_name):
 
+    def check_tags(self, tags):
+        if tags:
+            return True
+        else:
+            return False
+
+    def check_ingr(self, ingr):
+        if ingr:
+            return True
+        else:
+            return False
+
+    def add_ingr(self, request_ingr, recipe, delete_recipe: bool,):
         for i in request_ingr:
             try:
                 RecipeIngridient.objects.create(
@@ -17,15 +27,9 @@ class RecipeForm(forms.ModelForm):
                     amount=i[0]
                 )
             except Ingridient.DoesNotExist:
-                recipe_error = 'Произошла ошибка при добавлении ингридиента,' \
-                               ' возмможно вы ввели не существующий'
-
                 if delete_recipe is True:
                     recipe.delete()
 
-                return Response(
-                    {'form': form, 'recipe_error': recipe_error},
-                    template_name=template_name)
 
     def delete_tags(self, old_tags, old_recipe):
         for delete_tag in old_tags:

@@ -5,9 +5,7 @@
           href="{% static '/pages/single.css' %}">{% endblock %}
 {% block title %}Рецепт{% endblock %}
 
-
 {% block header %}
-    {% include 'includes/Header.html' with active_index='nav__item_active' %}{% endblock %}
 {% block content %}
     {% for recipe in recipe %}
         <div class="single-card" data-id="{{ recipe.id }}"

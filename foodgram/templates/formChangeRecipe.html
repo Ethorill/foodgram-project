@@ -3,6 +3,4 @@
 {% block page_title %}Редактирование рецепта рецепта{% endblock %}
 {% block button %}Редактировать
     рецепт{% endblock %}
-{% block header_form %}
-    <form class="form" method="post" enctype="multipart/form-data"
-          action="{% url 'edit_r' old_recipe.id %}">{% endblock %}
+{% block action_form %}{% url 'edit_r' %}{% endblock %}
