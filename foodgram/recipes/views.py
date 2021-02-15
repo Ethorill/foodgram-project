@@ -22,7 +22,6 @@ from .models import (Recipe,
                      User,
                      FavoriteRecipe,
                      FollowUser,
-                     RecipeIngridient,
                      Ingridient,
                      Tag,
                      ShopingList)
@@ -36,7 +35,7 @@ paginator_size = PAGINATOR_SIZE
 def edit_recipe(request, recipe_id):
     old_recipe = get_object_or_404(Recipe, id=recipe_id)
     old_tags = Tag.objects.all()
-    old_ingr = old_recipe.recipes_ingridients.all()
+    edit = True
     if request.user != old_recipe.author:
         return redirect(reverse('index'))
     request_ingr = get_ingr(request.POST.dict())
@@ -46,39 +45,16 @@ def edit_recipe(request, recipe_id):
                       instance=old_recipe)
 
     tags = get_tags_from_post(request.POST)
-    data = {'form': form, 'old_recipe': old_recipe,
-            'tags': old_tags}
 
     if form.is_valid():
-        # Я не понимаю как я должен правильнее вложить в форму проверку,
-        # Есть ли тэги и ингридиенты, ведь в разных формах работает это по разному
-        check_tags = form.check_tags_edit(tags)
-        check_ingr = form.check_ingr(request_ingr)
+        recipe = form.save(commit=False, tags=tags, old_recipe=old_recipe,
+                           old_tags=old_tags, request_ingr=request_ingr,
+                           edit=True, request=request)
 
-        if not check_ingr:
-            recipe_error = 'Обязательное поле'
-            return Response(
-                {'form': form, 'recipe_error': recipe_error,
-                 'old_recipe': old_recipe,
-                 'tags': old_tags},
-                template_name='formChangeRecipe.html')
-
-        if not check_tags:
-            tag_error = "Обязательное поле"
-            return Response({'form': form, 'tag_error': tag_error,
-                             'old_recipe': old_recipe,
-                             'tags': old_tags},
-                            template_name='formChangeRecipe.html')
-        recipe = form.save(commit=False)
-        recipe.save()
-        form.delete_tags(old_tags, old_recipe)
-        form.add_tags(tags=tags, recipe=recipe)
-        old_ingr.delete()
-        form.add_ingr(request_ingr, recipe, delete_recipe=False)
-        form.save_m2m()
-        return redirect(reverse('recipe_detail', args=[recipe.id]))
-    return Response(template_name='formChangeRecipe.html',
-                    data=data)
+        return recipe
+    return Response(template_name='formRecipe.html',
+                    data={'form': form, 'old_recipe': old_recipe,
+                          'tags': old_tags, 'edit': edit})
 
 
 @api_view(['GET', 'POST'])
@@ -90,30 +66,9 @@ def new_recipe(request):
     tags = get_tags_from_post(request.POST)
 
     if form.is_valid():
-        
-        check_tags = form.check_tags_edit(tags)
-        check_ingr = form.check_ingr(request_ingr)
-
-        if not check_ingr:
-            recipe_error = 'Обязательное поле'
-            return Response(
-                {'form': form, 'recipe_error': recipe_error,
-                 },
-                template_name='formRecipe.html')
-
-        if not check_tags:
-            tag_error = "Обязательное поле"
-            return Response({'form': form, 'tag_error': tag_error,
-                             },
-                            template_name='formRecipe.html')
-        recipe = form.save(commit=False)
-        recipe.author = request.user
-        recipe.save()
-        form.add_tags(tags, recipe)
-        form.add_ingr(request_ingr, recipe, delete_recipe=True)
-
-        form.save_m2m()
-        return redirect(reverse('recipe_detail', args=[recipe.id]))
+        recipe = form.save(commit=False, tags=tags, request_ingr=request_ingr,
+                           request=request)
+        return recipe
     return Response(template_name='formRecipe.html', data={'form': form, })
 
 

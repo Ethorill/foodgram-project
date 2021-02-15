@@ -1,6 +1,8 @@
 {% extends 'extends/base.html' %}
 {% block header %}
     {% load static %}
+    <!-- у меня меняеться хедер везде, он не статичный, я не могу его
+     не переопределять-->
     {% include 'includes/Header.html' with active_favor='nav__item_active' %}{% endblock %}
 {% block css %}
     <link rel="stylesheet"

@@ -4,4 +4,4 @@
 {% block button %}Редактировать
     рецепт{% endblock %}
 <!--Не понял как можно использовать 1 шаблон для разных вьюх-->
-{% block action_form %}{% url 'edit_r' %}{% endblock %}
+{% block action_form %}{% url 'edit_r' old_recipe.id %}{% endblock %}

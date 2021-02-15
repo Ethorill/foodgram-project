@@ -5,7 +5,7 @@
           href="{% static '/pages/single.css' %}">{% endblock %}
 {% block title %}Рецепт{% endblock %}
 
-{% block header %}
+
 {% block content %}
     {% for recipe in recipe %}
         <div class="single-card" data-id="{{ recipe.id }}"
@@ -42,7 +42,7 @@
 
                 </div>
                 <ul class="single-card__items">
-                    {% for tag in recipe.tag.all %}
+                    {% for tag in recipe.tags.all %}
                         {% if tag.name == 'Обед' %}
                             <li class="card__item"><span
                                     class="badge badge_style_green">Обед</span>
