@@ -7,20 +7,9 @@
            href="{% url 'recipe_detail' item.recipe.id %}"
            target="_blank">{{ item.recipe.title }}</a>
         <ul class="card__items">
-            {% for tag in item.recipe.tag.all %}
-                {% if tag.name == 'Обед' %}
-                    <li class="card__item"><span
-                            class="badge badge_style_green">Обед</span></li>
-                {% endif %}
-                {% if tag.name == 'Завтрак' %}
-                    <li class="card__item"><span
-                            class="badge badge_style_orange">Завтрак</span>
-                    </li>
-                {% endif %}
-                {% if tag.name == 'Ужин' %}
-                    <li class="card__item"><span
-                            class="badge badge_style_purple">Ужин</span></li>
-                {% endif %}
+            {% for tag in item.recipe.tags.all %}
+                <li class="card__item"><span
+                            class="badge badge_style_{{ tag.color }}">{{ tag.name }}</span></li>
             {% endfor %}
         </ul>
         <div class="card__items card__items_column">

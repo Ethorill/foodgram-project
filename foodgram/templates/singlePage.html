@@ -43,21 +43,12 @@
                 </div>
                 <ul class="single-card__items">
                     {% for tag in recipe.tags.all %}
-                        {% if tag.name == 'Обед' %}
+
                             <li class="card__item"><span
-                                    class="badge badge_style_green">Обед</span>
+                                    class="badge badge_style_{{ tag.color }}">{{ tag.name }}</span>
                             </li>
-                        {% endif %}
-                        {% if tag.name == 'Завтрак' %}
-                            <li class="card__item"><span
-                                    class="badge badge_style_orange">Завтрак</span>
-                            </li>
-                        {% endif %}
-                        {% if tag.name == 'Ужин' %}
-                            <li class="card__item"><span
-                                    class="badge badge_style_purple">Ужин</span>
-                            </li>
-                        {% endif %}
+
+
                     {% endfor %}
                 </ul>
                 <div class="single-card__items single-card__items_column">

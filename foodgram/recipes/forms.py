@@ -11,41 +11,40 @@ class RecipeForm(forms.ModelForm):
              edit=False):
         recipe = super(RecipeForm, self).save(commit=False)
         if not tags:
-            return redirect(reverse('recipe_detail', args=[recipe.id]))
+            return redirect(reverse('new_recipe'))
         if not request_ingr:
-            return redirect(reverse('recipe_detail', args=[recipe.id]))
+            return redirect(reverse('new_recipe'))
 
         recipe.author = request.user
         recipe.save()
         if edit:
             self.delete_tags(old_tags, old_recipe)
             self.delete_ingr(old_recipe)
-        self.add_tags(tags, recipe=recipe)
-        self.add_ingr(request_ingr, recipe)
+
+        for add_item in tags:
+            tag = get_object_or_404(Tag, slug=add_item)
+            recipe.tags.add(tag)
+        recipe.save()
+
+        for i in request_ingr:
+            _, created = RecipeIngridient.objects.get_or_create(
+                ingridient=get_object_or_404(Ingridient, title=i[1]),
+                recipe=recipe,
+                amount=i[0]
+            )
+            if not created:
+                recipe.delete()
+                return redirect(reverse('new_recipe'))
+        self.save_m2m()
         return redirect(reverse('recipe_detail', args=[recipe.id]))
 
     def delete_ingr(self, old_recipe):
         old_ingr = old_recipe.recipes_ingridients.all()
         old_ingr.delete()
 
-    def add_ingr(self, request_ingr, recipe):
-        for i in request_ingr:
-            RecipeIngridient.objects.create(
-                ingridient=get_object_or_404(Ingridient, title=i[1]),
-                recipe=recipe,
-                amount=i[0]
-            )
-        self.save_m2m()
-
     def delete_tags(self, old_tags, old_recipe):
         for delete_tag in old_tags:
             old_recipe.tags.remove(delete_tag)
-
-    def add_tags(self, tags, recipe):
-        for add_item in tags:
-            tag = get_object_or_404(Tag, slug=add_item)
-            recipe.tags.add(tag)
-        recipe.save()
 
     class Meta:
         model = Recipe

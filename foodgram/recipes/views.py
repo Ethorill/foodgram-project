@@ -197,11 +197,11 @@ def get_all_favor(request):
     if tags_list:
         favorites = FavoriteRecipe.objects.select_related('user').filter(
             user=request.user, recipe__tags__slug__in=tags_list
-        )
+        ).distinct()
     if not tags_list:
         favorites = FavoriteRecipe.objects.select_related('user').filter(
             user=request.user
-        )
+        ).distinct()
     paginator = Paginator(favorites, paginator_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
