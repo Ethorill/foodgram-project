@@ -8,6 +8,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default=get_random_secret_key())
 
 DEBUG = False
 
+# На деплое нужно обязательно менять
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [

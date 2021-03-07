@@ -1,7 +1,0 @@
-{% extends 'extends/baseForm.html' %}
-{% block title %}Редактировать пост{% endblock %}
-{% block page_title %}Редактирование рецепта рецепта{% endblock %}
-{% block button %}Редактировать
-    рецепт{% endblock %}
-<!--Не понял как можно использовать 1 шаблон для разных вьюх-->
-{% block action_form %}{% url 'edit_r' old_recipe.id %}{% endblock %}
