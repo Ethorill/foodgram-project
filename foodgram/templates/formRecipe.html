@@ -1,6 +1,6 @@
 {% extends 'extends/base.html' %}
 {% load static %}
-{% block title %}{% if edit is True %}Редактирвоание рцепета{% else %}Создание
+{% block title %}{% if edit is True %}Редактирование рцепета{% else %}Создание
     рцепета{% endif %}{% endblock %}
 
 {% block css %}
@@ -11,7 +11,7 @@
 {% block content %}
     <div class="main__header">
         <h1 class="main__title">
-            {% block page_title %}{% if edit is True %}Редактирвоание рецепта
+            {% block page_title %}{% if edit is True %}Редактирование рецепта
             {% else %}Создание рецепта{% endif %}{% endblock %}</h1>
     </div>
     <div class="form-container">
@@ -166,8 +166,7 @@
                        class="form__label">Описание</label>
                 <div class="form__field-group">
                     <textarea name="description" id="id_description" rows="8"
-                              class="form__textarea">{% if edit %}
-                        {{ old_recipe.description }}{% endif %}</textarea>
+                              class="form__textarea">{% if edit %}{{ old_recipe.description }}{% endif %}</textarea>
                     {% if form.errors %}
                         {% for error in form.description.errors %}
                             <span class="form__error">{{ error|escape }}</span>
