@@ -191,8 +191,8 @@
             <div class="form__footer">
                 <button class="button button_style_blue">
                     {% block button %}{% if edit %}Редактировать
-                        рецепт{% else %}Создать рецепт{% endif %}{% endblock %}
-                </button>
+                        рецепт {% else %}Создать рецепт{% endif %}{% endblock %}
+                </button>{% if edit %}<a style="margin-left: 2.5em" href="{% url 'recipe_delete'  old_recipe.id %}" class="form__ingredient-link">Удалить</a>{% endif %}
             </div>
         </form>
     </div>

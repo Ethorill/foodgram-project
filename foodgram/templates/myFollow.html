@@ -1,5 +1,6 @@
 {% extends 'extends/base.html' %}
 {% load static %}
+
 {% block title %}Подписки{% endblock %}
 {% block header %}
     {% include 'includes/Header.html' with active_sub='nav__item_active' %}{% endblock %}
@@ -56,9 +57,7 @@
                     </ul>
                 </div>
                 <div class="card-user__footer">
-                    <button class="button button_style_light-blue button_size_auto"
-                            name="subscribe">Отписаться
-                    </button>
+                    <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
                 </div>
             </div>
         {% endfor %}
