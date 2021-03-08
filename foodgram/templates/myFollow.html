@@ -56,9 +56,11 @@
 
                     </ul>
                 </div>
-                <div class="card-user__footer">
-                    <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
-                </div>
+
+                    <div class="card-user__footer">
+                            <button onclick="location.href = '{% url 'get_all_sub' %}'" class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+                    </div>
+
             </div>
         {% endfor %}
 
