@@ -29,6 +29,7 @@ from .models import (Recipe,
 paginator_size = PAGINATOR_SIZE
 
 
+@login_required()
 @api_view(['GET', 'POST'])
 @renderer_classes([TemplateHTMLRenderer])
 @permission_classes([IsAuthenticated])
@@ -57,6 +58,7 @@ def edit_recipe(request, recipe_id):
                           'tags': old_tags, 'edit': edit})
 
 
+@login_required()
 @api_view(['GET', 'POST'])
 @renderer_classes([TemplateHTMLRenderer])
 def new_recipe(request):
@@ -159,6 +161,7 @@ def recipe_profile(request, prof_id):
                     template_name='authorRecipe.html')
 
 
+@login_required()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -177,6 +180,7 @@ def add_favorite(request):
     return Response({'success': False})
 
 
+@login_required()
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -189,6 +193,7 @@ def favorite_remove(request, id):
     return Response({'success': True}, status=status.HTTP_200_OK)
 
 
+@login_required()
 @api_view(['GET'])
 @renderer_classes([TemplateHTMLRenderer])
 @permission_classes([IsAuthenticated])
@@ -210,6 +215,7 @@ def get_all_favor(request):
         template_name='favorite.html')
 
 
+@login_required()
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
@@ -230,6 +236,7 @@ def add_sub(request):
     return Response({'success': False}, status.HTTP_400_BAD_REQUEST)
 
 
+@login_required()
 @api_view(['DELETE'])
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
@@ -244,6 +251,7 @@ def remove_sub(request, id):
     return Response({'success': True}, status.HTTP_200_OK)
 
 
+@login_required()
 @api_view(['GET'])
 @renderer_classes([TemplateHTMLRenderer])
 @permission_classes([IsAuthenticated])
@@ -258,6 +266,7 @@ def get_all_sub(request):
                     template_name='myFollow.html')
 
 
+@login_required()
 @api_view(['GET'])
 @renderer_classes([TemplateHTMLRenderer])
 @permission_classes([IsAuthenticated])
@@ -266,6 +275,7 @@ def shoplist(request):
     return Response({'shop_list': shop_list}, template_name='shopList.html')
 
 
+@login_required()
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
@@ -284,6 +294,7 @@ def add_purchases(request):
     return Response({'success': False})
 
 
+@login_required()
 @api_view(['DELETE', 'GET'])
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])

@@ -49,9 +49,9 @@ class RecipeForm(forms.ModelForm):
                 amount=ingredient_values[0]
             )
             if not created:
-                recipe.delete()
                 if edit:
                     return redirect(reverse('edit_r', args=[old_recipe.id]))
+                recipe.delete()
                 return redirect(reverse('new_recipe'))
         self.save_m2m()
         return redirect(reverse('recipe_detail', args=[recipe.id]))
