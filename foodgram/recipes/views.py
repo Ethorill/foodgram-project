@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from rest_framework import status
@@ -24,7 +24,7 @@ from .models import (Recipe,
                      FollowUser,
                      Ingridient,
                      Tag,
-                     ShopingList)
+                     ShopingList, RecipeIngridient)
 
 paginator_size = PAGINATOR_SIZE
 
@@ -137,10 +137,15 @@ def recipe_detail(request, id):
         follow=Exists(
             FollowUser.objects.filter(author=OuterRef('author'),
                                       user=visitor)
-        )
+        ),
+
     ).distinct()
 
-    return Response({'recipe': recipe},
+    ingredients = RecipeIngridient.objects.filter(recipe_id=id).values(
+        'ingridient__title', 'ingridient__measurement_unit').annotate(
+        sum=Sum('amount'))
+
+    return Response({'recipe': recipe, 'ingredients': ingredients},
                     template_name='singlePage.html')
 
 

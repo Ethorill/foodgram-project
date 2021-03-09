@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
@@ -31,6 +32,14 @@ class RecipeForm(forms.ModelForm):
                     return redirect(reverse('edit_r', args=[old_recipe.id]))
                 return redirect(reverse('new_recipe'))
 
+        for i in request_ingr:
+            try:
+                Ingridient.objects.get(title=i[1])
+            except Ingridient.DoesNotExist:
+                if edit:
+                    return redirect(reverse('edit_r', args=[old_recipe.id]))
+                return redirect(reverse('new_recipe'))
+
         recipe.author = request.user
         recipe.save()
         if edit:
@@ -43,16 +52,19 @@ class RecipeForm(forms.ModelForm):
         recipe.save()
 
         for ingredient_values in request_ingr:
-            _, created = RecipeIngridient.objects.get_or_create(
-                ingridient=get_object_or_404(Ingridient, title=ingredient_values[1]),
-                recipe=recipe,
-                amount=ingredient_values[0]
-            )
-            if not created:
+            try:
+                RecipeIngridient.objects.create(
+                    ingridient=Ingridient.objects.get(
+                        title=ingredient_values[1]),
+                    recipe=recipe,
+                    amount=ingredient_values[0]
+                )
+            except Ingridient.DoesNotExist:
                 if edit:
                     return redirect(reverse('edit_r', args=[old_recipe.id]))
                 recipe.delete()
                 return redirect(reverse('new_recipe'))
+
         self.save_m2m()
         return redirect(reverse('recipe_detail', args=[recipe.id]))
 
