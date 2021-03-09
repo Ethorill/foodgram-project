@@ -58,18 +58,21 @@ def edit_recipe(request, recipe_id):
             return render(request, 'formRecipe.html', {'form': form,
                                                        'ingr_error': 'Вы не добавили ингредиенты',
                                                        'edit': edit,
+                                                       'tags': old_tags,
                                                        'old_recipe': old_recipe})
 
         if form.check_amount_ingr(request_ingr):
             return render(request, 'formRecipe.html', {'form': form,
                                                        'amount_error': 'Вы ввели отрицательное значение',
                                                        'edit': edit,
+                                                       'tags': old_tags,
                                                        'old_recipe': old_recipe})
 
         if form.check_ingr_exist(request_ingr):
             return render(request, 'formRecipe.html', {'form': form,
                                                        'ingr_exist_error': 'Такого ингредиента у нас, пока, нету',
                                                        'edit': edit,
+                                                       'tags': old_tags,
                                                        'old_recipe': old_recipe})
         recipe = form.save(commit=False, tags=tags, old_recipe=old_recipe,
                            old_tags=old_tags, request_ingr=request_ingr,
