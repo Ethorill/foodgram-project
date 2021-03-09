@@ -37,6 +37,7 @@ class RecipeForm(forms.ModelForm):
         return redirect(reverse('recipe_detail', args=[recipe.id]))
 
     def check_ingr_exist(self, request_ingr):
+        # Проверка. существует ли такой ингридиент
         for ingredient in request_ingr:
             try:
                 Ingridient.objects.get(title=ingredient[1])
@@ -53,21 +54,24 @@ class RecipeForm(forms.ModelForm):
             return False
 
     def check_ing(self, request_ingr):
+        # Проверка, получены ли ингредиенты
         if not request_ingr:
             return True
         return False
 
     def check_tags(self, tags):
+        # Проверка, получены ли тэги
         if not tags:
-            # Проверка, получены ли тэги
             return True
         return False
 
     def delete_ingr(self, old_recipe):
+        # Удаление старых ингредиентов
         old_ingr = old_recipe.recipes_ingridients.all()
         old_ingr.delete()
 
     def delete_tags(self, old_tags, old_recipe):
+        # Удаление старых ингредиентов
         for delete_tag in old_tags:
             old_recipe.tags.remove(delete_tag)
 
