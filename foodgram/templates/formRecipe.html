@@ -74,6 +74,7 @@
                                 <label for="id_dinner"
                                        class="tags__label">Ужин</label>
                             </div>
+
                         </div>
                     {% endif %}
                     {% if tag_error %}
@@ -81,7 +82,9 @@
                         <span class="form__error">{{ tag_error }}</span>
 
                     {% endif %}
+
                 </div>
+
             </div>
             <div class="form__group">
                 <label for="nameIngredient"
@@ -141,9 +144,17 @@
 
                     </div>
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
-                    {% if recipe_error %}
-                        <span class="form__error">{{ recipe_error }}</span>
+
+                    {% if ingr_error %}
+                        <span class="form__error">{{ ingr_error }}</span>
                     {% endif %}
+                    {% if amount_error %}
+                            <span class="form__error">{{ amount_error }}</span>
+                    {% endif %}
+                    {% if ingr_exist_error %}
+                        <span class="form__error">{{ ingr_exist_error }}</span>
+                    {% endif %}
+
                 </div>
             </div>
             <div class="form__group">

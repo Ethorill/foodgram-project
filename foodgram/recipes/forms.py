@@ -13,35 +13,9 @@ class RecipeForm(forms.ModelForm):
 
         recipe = super(RecipeForm, self).save(commit=False)
 
-        if not tags:
-            # Проверка, получены ли тэги
-            if edit:
-                return redirect(reverse('edit_r', args=[old_recipe.id]))
-            return redirect(reverse('new_recipe'))
-        if not request_ingr:
-            # Проверка, получены ли ингредиенты
-            if edit:
-                return redirect(reverse('edit_r', args=[old_recipe.id]))
-            return redirect(reverse('new_recipe'))
-
-        for ingredients_param in request_ingr:
-            # Проверка, ввел ли пользователь отрицательное
-            # число в количество ингредиентов
-            if int(ingredients_param[0]) <= 0:
-                if edit:
-                    return redirect(reverse('edit_r', args=[old_recipe.id]))
-                return redirect(reverse('new_recipe'))
-
-        for i in request_ingr:
-            try:
-                Ingridient.objects.get(title=i[1])
-            except Ingridient.DoesNotExist:
-                if edit:
-                    return redirect(reverse('edit_r', args=[old_recipe.id]))
-                return redirect(reverse('new_recipe'))
-
         recipe.author = request.user
         recipe.save()
+
         if edit:
             self.delete_tags(old_tags, old_recipe)
             self.delete_ingr(old_recipe)
@@ -52,21 +26,42 @@ class RecipeForm(forms.ModelForm):
         recipe.save()
 
         for ingredient_values in request_ingr:
-            try:
-                RecipeIngridient.objects.create(
-                    ingridient=Ingridient.objects.get(
-                        title=ingredient_values[1]),
-                    recipe=recipe,
-                    amount=ingredient_values[0]
-                )
-            except Ingridient.DoesNotExist:
-                if edit:
-                    return redirect(reverse('edit_r', args=[old_recipe.id]))
-                recipe.delete()
-                return redirect(reverse('new_recipe'))
+            RecipeIngridient.objects.create(
+                ingridient=Ingridient.objects.get(
+                    title=ingredient_values[1]),
+                recipe=recipe,
+                amount=ingredient_values[0]
+            )
 
         self.save_m2m()
         return redirect(reverse('recipe_detail', args=[recipe.id]))
+
+    def check_ingr_exist(self, request_ingr):
+        for ingredient in request_ingr:
+            try:
+                Ingridient.objects.get(title=ingredient[1])
+            except Ingridient.DoesNotExist:
+                return True
+            return False
+
+    def check_amount_ingr(self, request_ingr):
+        for ingredients_param in request_ingr:
+            # Проверка, ввел ли пользователь отрицательное
+            # число в количество ингредиентов
+            if int(ingredients_param[0]) <= 0:
+                return True
+            return False
+
+    def check_ing(self, request_ingr):
+        if not request_ingr:
+            return True
+        return False
+
+    def check_tags(self, tags):
+        if not tags:
+            # Проверка, получены ли тэги
+            return True
+        return False
 
     def delete_ingr(self, old_recipe):
         old_ingr = old_recipe.recipes_ingridients.all()
