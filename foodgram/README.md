@@ -10,7 +10,7 @@ ip - 84.201.160.50
 
 Запустить docker-compose:
 
-`docker-compose up`
+`docker-compose up -d --build`
 
 При первом запуске для функционирования проекта обязательно выполнить миграции:
 
@@ -20,3 +20,24 @@ ip - 84.201.160.50
 
 `docker-compose exec web python manage.py loaddata ingredients.json`
 
+
+------------
+# Eng-Version
+
+# foodgram-project
+
+"Grocery Assistant" (The Yandex Project.Workshop)
+ip-84.201.160.50
+# # Description
+
+This is an online service where users can publish recipes, subscribe to other users ' publications, add their favorite recipes to the Favorites list, and download a summary list of products needed to prepare one or more selected dishes before going to the store.
+
+## Launch (docker)
+
+Run docker-compose:
+
+`docker-compose up -d --build`
+
+At the first launch, you must perform migrations for the project to function:
+
+`docker-compose exec web python manage.py migrate`
