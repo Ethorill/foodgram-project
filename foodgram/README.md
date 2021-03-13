@@ -1,7 +1,6 @@
 # foodgram-project
 
-«Продуктовый помощник» (Проект Яндекс.Практикум) 
-ip - 84.201.160.50
+«Продуктовый помощник» 
 ## Описание
 
 Это онлайн-сервис, где пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
@@ -26,8 +25,8 @@ ip - 84.201.160.50
 
 # foodgram-project
 
-"Grocery Assistant" (The Yandex Project.Workshop)
-ip-84.201.160.50
+"foodgram"
+
 # # Description
 
 This is an online service where users can publish recipes, subscribe to other users ' publications, add their favorite recipes to the Favorites list, and download a summary list of products needed to prepare one or more selected dishes before going to the store.
