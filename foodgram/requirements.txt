@@ -1,5 +1,5 @@
 Django==3.0.1
-Pillow==8.1.0
+Pillow==8.1.1
 djangorestframework==3.11.0
 xhtml2pdf==0.2.5
 psycopg2
